@@ -1,5 +1,1 @@
-function restSchemaTable() {
-    
-}
-
-module.exports = restSchemaTable;
+throw new Error('not implemented');
