@@ -15,24 +15,31 @@ A table of contents for your REST service schema
 ## Example
 
 ```js
-var restSchemaTable = require("rest-schema-table");
+var SchemaTable = require("rest-schema-table/schema-table");
 
-// TODO. Show example
+var table = SchemaTable();
+table.set('/foo/:bar', {
+  'GET': {
+    'requestSchema': { ... },
+    'responseSchema': { ... }
+  }
+});
+
+console.log('obj', table.toJSON());
 ```
 
-## Docs
+## Motivation
 
-### `var someValue = restSchemaTable(/*arguments*/)`
+SchemaTable is an in memory data structure that defines the interface
+    of any network server.
+    
+It's designed to enforce REST semantics so it will restrict you
+    to defining your interface in terms of endpoints that are named
+    as URL patterns and having a set of methods that are named after
+    HTTP verbs.
+    
+The requestSchema and responseSchema are arbitrary.
 
-<!--
-  This is a jsig notation of your interface.
-  https://github.com/Raynos/jsig
--->
-```ocaml
-rest-schema-table := (arg: Any) => void
-```
-
-// TODO. State what the module does.
 
 ## Installation
 
