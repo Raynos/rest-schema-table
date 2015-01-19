@@ -18,13 +18,19 @@ A table of contents for your REST service schema
 var SchemaTable = require("rest-schema-table/schema-table");
 
 var table = SchemaTable();
-table.set('/foo/:bar', {
+table.multiSet('/foo/:bar', {
   'GET': {
     'requestSchema': { ... },
     'responseSchema': { ... }
   }
 });
 
+//  {
+//      'GET /foo/:bar': {
+//          request: { ... },
+//          response: { ... }
+//      }
+//  }
 console.log('obj', table.toJSON());
 ```
 
@@ -32,14 +38,16 @@ console.log('obj', table.toJSON());
 
 SchemaTable is an in memory data structure that defines the interface
     of any network server.
-    
-It's designed to enforce REST semantics so it will restrict you
-    to defining your interface in terms of endpoints that are named
-    as URL patterns and having a set of methods that are named after
-    HTTP verbs.
+
+It currently encodes arbitrarly named operations which have
+    requests and responses.
+
+By convention it's recommended that you encode REST semantics
+    by naming your operations as
+    `"{HTTP_METHOD} {HTTP_URL_PATTERN}"`. i.e. your server has
+    a set of operations that are methods on resources.
     
 The requestSchema and responseSchema are arbitrary.
-
 
 ## Installation
 

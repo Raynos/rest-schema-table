@@ -21,7 +21,7 @@ test('works with new', function t(assert) {
 test('can add endpoints', function t(assert) {
     var table = SchemaTable();
 
-    table.set('/foo', {
+    table.multiSet('/foo', {
         'GET': {
             requestSchema: {},
             responseSchema: {}
@@ -29,11 +29,9 @@ test('can add endpoints', function t(assert) {
     });
 
     assert.deepEqual(table.toJSON(), {
-        '/foo': {
-            'GET': {
-                request: {},
-                response: {}
-            }
+        'GET /foo': {
+            request: {},
+            response: {}
         }
     });
     assert.end();
@@ -43,7 +41,7 @@ test('add throws without args', function t(assert) {
     var table = SchemaTable();
 
     assert.throws(function throwIt() {
-        table.set();
+        table.multiSet();
     }, /endpoint must be a string/);
     assert.end();
 });
@@ -52,7 +50,7 @@ test('add throws with func', function t(assert) {
     var table = SchemaTable();
 
     assert.throws(function throwIt() {
-        table.set('/foo', function handler() {});
+        table.multiSet('/foo', function handler() {});
     }, /methods must be an object/);
     assert.end();
 });
@@ -60,7 +58,7 @@ test('add throws with func', function t(assert) {
 test('supports arbitrary methods', function t(assert) {
     var table = SchemaTable();
 
-    table.set('/foo', {
+    table.multiSet('/foo', {
         'GET': {
             requestSchema: {},
             responseSchema: {}
@@ -80,23 +78,21 @@ test('supports arbitrary methods', function t(assert) {
     });
 
     assert.deepEqual(table.toJSON(), {
-        '/foo': {
-            'GET': {
-                request: {},
-                response: {}
-            },
-            'POST': {
-                request: {},
-                response: {}
-            },
-            'X-WAT': {
-                request: {},
-                response: {}
-            },
-            'someKey': {
-                request: {},
-                response: {}
-            }
+        'GET /foo': {
+            request: {},
+            response: {}
+        },
+        'POST /foo': {
+            request: {},
+            response: {}
+        },
+        'X-WAT /foo': {
+            request: {},
+            response: {}
+        },
+        'someKey /foo': {
+            request: {},
+            response: {}
         }
     });
     assert.end();
@@ -104,13 +100,13 @@ test('supports arbitrary methods', function t(assert) {
 
 test('can add multiple schemas', function t(assert) {
     var table = SchemaTable();
-    table.set('/foo', {
+    table.multiSet('/foo', {
         'GET': {
             requestSchema: {},
             responseSchema: {}
         }
     });
-    table.set('/bar', {
+    table.multiSet('/bar', {
         'POST': {
             requestSchema: {},
             responseSchema: {}
@@ -118,12 +114,8 @@ test('can add multiple schemas', function t(assert) {
     });
 
     assert.deepEqual(table.toJSON(), {
-        '/foo': {
-            'GET': { request: {}, response: {} }
-        },
-        '/bar': {
-            'POST': { request: {}, response: {} }
-        }
+        'GET /foo': { request: {}, response: {} },
+        'POST /bar': { request: {}, response: {} }
     });
     assert.end();
 });
@@ -131,7 +123,7 @@ test('can add multiple schemas', function t(assert) {
 test('can get data out', function t(assert) {
     var table = SchemaTable();
 
-    table.set('/foo', {
+    table.multiSet('/foo', {
         'GET': {
             requestSchema: {},
             responseSchema: {}
@@ -139,19 +131,18 @@ test('can get data out', function t(assert) {
     });
 
     assert.deepEqual(table.toJSON(), {
-        '/foo': {
-            'GET': {
-                request: {},
-                response: {}
-            }
+        'GET /foo': {
+            request: {},
+            response: {}
         }
     });
     assert.end();
 });
+
 test('data that comes out is a copy', function t(assert) {
     var table = SchemaTable();
 
-    table.set('/foo', {
+    table.multiSet('/foo', {
         'GET': {
             requestSchema: {},
             responseSchema: {}
@@ -172,14 +163,108 @@ test('throws assertions for missing schemas', function t(assert) {
     var table = SchemaTable();
 
     assert.throws(function throwIt() {
-        table.set('/foo', {
+        table.multiSet('/foo', {
             'GET': {}
         });
     }, /requestSchema required/);
     assert.throws(function throwIt() {
-        table.set('/bar', {
+        table.multiSet('/bar', {
             'POST': { requestSchema: {} }
         });
     }, /responseSchema required/);
+    assert.end();
+});
+
+test('set can add operations', function t(assert) {
+    var table = SchemaTable();
+
+    table.set('foo', {
+        requestSchema: {},
+        responseSchema: {}
+    });
+
+    assert.deepEqual(table.toJSON(), {
+        'foo': { request: {}, response: {} }
+    });
+    assert.end();
+});
+
+test('set can add operations with method', function t(assert) {
+    var table = SchemaTable();
+
+    table.set('GET foo', {
+        requestSchema: {},
+        responseSchema: {}
+    });
+
+    assert.deepEqual(table.toJSON(), {
+        'GET foo': { request: {}, response: {} }
+    });
+    assert.end();
+});
+
+test('set throws without args', function t(assert) {
+    var table = SchemaTable();
+
+    assert.throws(function throwIt() {
+        table.set();
+    }, /endpoint must be a string/);
+
+    assert.end();
+});
+
+test('set throws with non-object', function t(assert) {
+    var table = SchemaTable();
+
+    assert.throws(function throwIt() {
+        table.set('foo', function handler() {});
+    }, /schemas must be an object/);
+
+    assert.end();
+});
+
+test('set throws without requestSchema', function t(assert) {
+    var table = SchemaTable();
+
+    assert.throws(function throwIt() {
+        table.set('foo', {});
+    }, /requestSchema required/);
+
+    assert.end();
+});
+
+test('set throws without responseSchema', function t(assert) {
+    var table = SchemaTable();
+
+    assert.throws(function throwIt() {
+        table.set('foo', { requestSchema: {} });
+    }, /responseSchema required/);
+
+    assert.end();
+});
+
+test('can set multiple ops', function t(assert) {
+    var table = SchemaTable();
+
+    table.set('GET foo', {
+        requestSchema: {},
+        responseSchema: {}
+    });
+    table.set('POST bar', {
+        requestSchema: {},
+        responseSchema: {}
+    });
+
+    assert.deepEqual(table.toJSON(), {
+        'GET foo': {
+            request: {},
+            response: {}
+        },
+        'POST bar': {
+            request: {},
+            response: {}
+        }
+    });
+
     assert.end();
 });
