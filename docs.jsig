@@ -1,0 +1,21 @@
+type JSONSchema : Object
+type OperationName : String
+
+type SchemaTableStruct : Object<OperationName, {
+    request: JSONSchema,
+    response: JSONSchema
+}>
+
+type SchemaTable : {
+    set: (op: OperationName, {
+        requestSchema: JSONSchema,
+        responseSchema: JSONSchema
+    }) => void,
+    multiSet: (op: OperationName, Object<String, {
+        requestSchema: JSONSchema,
+        responseSchema: JSONSchema
+    }>) => void,
+    toJSON: () => SchemaTableStruct
+}
+
+rest-schema-table/schema-table : () => SchemaTable
