@@ -1,6 +1,6 @@
 {
   "name": "rest-schema-table",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A table of contents for your REST service schema",
   "keywords": [],
   "author": "Raynos <raynos2@gmail.com>",
