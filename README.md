@@ -15,9 +15,9 @@ A table of contents for your REST service schema
 ## Example
 
 ```js
-var SchemaTable = require("rest-schema-table/schema-table");
+var RestSchemaTable = require("rest-schema-table");
 
-var table = SchemaTable();
+var table = RestSchemaTable();
 table.multiSet('/foo/:bar', {
   'GET': {
     'requestSchema': { ... },
