@@ -31,25 +31,22 @@ proto.set = function set(endpoint, schemas) {
 };
 
 proto.multiSet = function multiSet(endpoint, methods) {
-    var self = this;
     assert(typeof endpoint === 'string',
         'endpoint must be a string');
     assert(methods && typeof methods === 'object',
         'methods must be an object');
 
-    var endpoints = {};
-    Object.keys(methods).forEach(function addSchema(key) {
+    var methodNames = Object.keys(methods);
+
+    for (var i = 0; i < methodNames.length; i++) {
+        var key = methodNames[i];
         var h = methods[key];
 
-        endpoints[key + ' ' + endpoint] = {
+        this.set(key + ' ' + endpoint, {
             requestSchema: h.requestSchema,
             responseSchema: h.responseSchema
-        };
-    });
-
-    Object.keys(endpoints).forEach(function setEndpoint(k) {
-        self.set(k, endpoints[k]);
-    });
+        });
+    }
 };
 
 proto.toJSON = function toJSON() {
